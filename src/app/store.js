@@ -10,9 +10,7 @@ export const store = {
         return this.state.seedData.find((day) => day.active)
     },
     setActiveDay(dayId) {
-        this.state.seedData.map((dayObj) => {
-            dayObj.id === dayId ? dayObj.active = true : dayObj.active = false
-        })
+        this.state.seedData.map((dayObj) => { dayObj.id === dayId ? dayObj.active = true : dayObj.active = false })
     }, 
     // EVENT //
     submitEvent(eventDetails) {
@@ -21,20 +19,26 @@ export const store = {
     },
     editEvent(dayId,eventDetails) {
         this.resetEditOfAllEvents()
-        const dayObj = this.state.seedData.find(day => day.id === dayId)
-        const eventObj = dayObj.events.find(event => event.details === eventDetails)
+        const eventObj = this.getEventObj(dayId, eventDetails)
         eventObj.edit = true
     },
     updateEvent(dayId, originalEventDetails, newEventDetails) {
-        const dayObj = this.state.seedData.find(day => day.id === dayId)
-        const eventObj = dayObj.events.find(event => event.details === originalEventDetails)
+        const eventObj = this.getEventObj(dayId, originalEventDetails)
         eventObj.details = newEventDetails
         eventObj.edit = false
+    },
+    deleteEvent(dayId, eventDetails) {
+        const dayObj = this.getDayObj(dayId)
+        const eventIndexToRemove = dayObj.events.findIndex(event => event.details === eventDetails)
+        dayObj.events.splice(eventIndexToRemove, 1)
     },
     resetEditOfAllEvents() {
         this.state.seedData.map((dayObj) => dayObj.events.map((event) => event.edit = false))
     },
     // HELPERS //
+    getDayObj(dayId) {
+        return this.state.seedData.find(day => day.id === dayId)
+    }, 
     getEventObj(dayId, eventDetails) {
         const dayObj = this.state.seedData.find(day => day.id === dayId)
         return dayObj.events.find(event => event.details === eventDetails)
